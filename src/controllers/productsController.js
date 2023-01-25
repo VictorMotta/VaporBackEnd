@@ -1,7 +1,7 @@
 import { productsCollection } from "../config/databases.js";
 
 export async function products(req, res) {
-  const { limit, offset } = req.query;
+  let { limit, offset } = req.query;
   if (!limit || !offset) {
     limit = 0;
     offset = 0;
