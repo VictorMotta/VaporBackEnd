@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import AuthRouter from "./routes/ath.routes.js";
 
 const port = process.env.PORT || 5000;
 
@@ -7,6 +8,8 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 //mamao doce
+
+server.use([AuthRouter]);
 
 server.listen(
   port,

@@ -14,3 +14,5 @@ try {
 }
 
 export default db;
+
+export const usersCollection = db.collection("users");
