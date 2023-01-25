@@ -14,3 +14,6 @@ try {
 }
 
 export default db;
+
+export const usersCollection = db.collection("users");
+export const productsCollection = db.collection("products");
