@@ -1,4 +1,5 @@
 import { usersCollection } from "../config/databases.js";
+import bcryt from "bcrypt";
 
 export async function signUp(req, res) {
   const { name, avatar, email, confirmEmail, password, confirmPassword } =
@@ -16,8 +17,25 @@ export async function signUp(req, res) {
     return res.status(409).send("Username or email already exists");
   }
 
+  const encryptedPassword = await bcryt.hash(password, 10).catch((err) => {
+    console.log(
+      `"signUp: bcrypt.hash error for  password:"`,
+      password,
+      err.message
+    );
+  });
+
+  const now = new Date();
+
   const user = await usersCollection
-    .insertOne({ name, avatar, email, password })
+    .insertOne({
+      name,
+      avatar,
+      email,
+      password: encryptedPassword,
+      createdAt: now,
+      updatedAt: now,
+    })
     .catch((err) => {
       console.log("signUp: insertOne error for user:", user, err.message);
     });

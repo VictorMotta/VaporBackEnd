@@ -5,6 +5,6 @@ export const signUpSchema = joi.object({
   avatar: joi.string().uri().required(),
   email: joi.string().email().required(),
   confirmEmail: joi.ref("email"),
-  password: joi.string().min(6).required(),
+  password: joi.string().min(8).max(36).required(),
   confirmPassword: joi.ref("password"),
 });
