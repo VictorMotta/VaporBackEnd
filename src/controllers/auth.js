@@ -2,8 +2,7 @@ import { usersCollection } from "../config/databases.js";
 import bcryt from "bcryptjs";
 
 export async function signUp(req, res) {
-  const { name, avatar, email, confirmEmail, password, confirmPassword } =
-    req.body;
+  const { name, avatar, email, password } = req.body;
 
   try {
     const userAlreadyExists = await usersCollection.findOne({
