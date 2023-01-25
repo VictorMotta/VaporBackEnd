@@ -5,16 +5,20 @@ export async function signUp(req, res) {
   const { name, avatar, email, confirmEmail, password, confirmPassword } =
     req.body;
 
-  const userAlreadyExists = await usersCollection
-    .findOne({ $or: [({ email }, { name })] })
-    .catch((err) => {
-      console.log(
-        `signUp: findOne error for name:${name} with email:${email} !`,
-        err.message
-      );
+  try {
+    const userAlreadyExists = await usersCollection.findOne({
+      $or: [({ email }, { name })],
     });
-  if (userAlreadyExists) {
-    return res.status(409).send("Username or email already exists");
+
+    if (userAlreadyExists) {
+      return res.status(409).send("Username or email already exists");
+    }
+  } catch (error) {
+    console.log(
+      `signUp: findOne error for name:${name} with email:${email} !`,
+      error.message
+    );
+    res.status(500).send(error.message);
   }
 
   const encryptedPassword = await bcryt.hash(password, 10).catch((err) => {
