@@ -4,7 +4,7 @@ export async function products(req, res) {
   const { limit, offset } = req.query;
   if (!limit || !offset) {
     limit = 0;
-    skip = 0;
+    offset = 0;
   }
   try {
     const products = await productsCollection
