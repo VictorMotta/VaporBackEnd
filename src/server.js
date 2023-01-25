@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import AuthRouter from "./routes/ath.routes.js";
+import AuthRouter from "./routes/authRoutes.js";
 import ProductsRouter from "./routes/productsRouter.js";
 
 const port = process.env.PORT || 5000;
@@ -8,7 +8,6 @@ const port = process.env.PORT || 5000;
 const server = express();
 server.use(cors());
 server.use(express.json());
-//mamao doce
 
 server.use([AuthRouter, ProductsRouter]);
 
