@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import AuthRouter from "./routes/authRoutes.js";
 import ProductsRouter from "./routes/productsRouter.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const port = process.env.PORT || 5000;
 
@@ -11,7 +13,4 @@ server.use(express.json());
 
 server.use([AuthRouter, ProductsRouter]);
 
-server.listen(
-  port,
-  console.log(`Servidor iniciado com sucesso! Na porta: ${port}`)
-);
+server.listen(port, console.log(`Servidor iniciado com sucesso! Na porta: ${port}`));
