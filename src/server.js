@@ -9,7 +9,7 @@ server.use(cors());
 server.use(express.json());
 //mamao doce
 
-server.use([AuthRouter]);
+server.use([AuthRouter, ProductsRouter]);
 
 server.listen(
   port,
