@@ -17,3 +17,13 @@ export async function products(req, res) {
     res.status(500).send(error.message);
   }
 }
+export async function productsPromotion(req, res) {
+  try {
+    const products = await productsCollection
+      .find({ pricePromo: { $gt: 0 } })
+      .toArray();
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
