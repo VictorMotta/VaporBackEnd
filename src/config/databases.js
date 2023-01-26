@@ -13,7 +13,6 @@ try {
   console.log("Erro no mongo.conect", err.message);
 }
 
-export default db;
-
 export const usersCollection = db.collection("users");
 export const productsCollection = db.collection("products");
+export const sessionsCollection = db.collection("sessions");
