@@ -4,6 +4,11 @@ import bcryptjs from "bcryptjs";
 
 export async function signUp(req, res) {
   const { name, avatar, email, password } = req.body;
+  const { typeuser } = req.headers;
+
+  if (!typeuser && (typeuser != "user" || typeuser != "admin")) {
+    return res.status(401).send("Apenas Usuários podem ser cadastrados!");
+  }
 
   try {
     const userAlreadyExists = await usersCollection.findOne({
@@ -28,6 +33,7 @@ export async function signUp(req, res) {
     .insertOne({
       name,
       avatar,
+      typeUser: typeuser,
       email,
       password: encryptedPassword,
       createdAt: now,
@@ -61,6 +67,7 @@ export async function signIn(req, res) {
         const bodyTokenNoExist = {
           name: user.name,
           avatar: user.avatar,
+          typeUser: user.typeUser,
           token: token,
         };
 
@@ -71,6 +78,7 @@ export async function signIn(req, res) {
       const bodyTokenExist = {
         name: user.name,
         avatar: user.avatar,
+        typeUser: user.typeUser,
         token: tokenExist.token,
       };
 
