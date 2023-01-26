@@ -1,4 +1,5 @@
-import { usersCollection } from "../config/databases.js";
+import { v4 as uuid } from "uuid";
+import { sessionsCollection, usersCollection } from "../config/databases.js";
 import bcrypt from "bcrypt";
 
 export async function signUp(req, res) {
@@ -44,12 +45,40 @@ export async function signUp(req, res) {
 
 export async function signIn(req, res) {
   const { email, password } = req.body;
+  const token = uuid();
 
   try {
-    const checkUser = await usersCollection.findOne({ email });
+    const user = await usersCollection.findOne({ email });
 
-    if (!checkUser) {
-      return res.status(401).send("E-mail ou senha incorretos!");
+    if (user && bcrypt.compareSync(password, user.password)) {
+      const tokenExist = await sessionsCollection.findOne({ idUser: user._id });
+
+      if (!tokenExist) {
+        console.log("entrou token não existe");
+
+        await db.collection("sessions").insertOne({ idUser: user._id, token });
+
+        const bodyTokenNoExist = {
+          name: user.name,
+          avatar: user.avatar,
+          token: token,
+        };
+
+        return res.send(bodyTokenNoExist);
+      }
+
+      console.log("entrou token existe");
+      const bodyTokenExist = {
+        name: user.name,
+        avatar: user.avatar,
+        token: tokenExist.token,
+      };
+
+      return res.send(bodyTokenExist);
     }
-  } catch (error) {}
+
+    return res.status(401).send("E-mail ou senha incorretos!");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
 }
