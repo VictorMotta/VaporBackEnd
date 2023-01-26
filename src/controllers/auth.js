@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { sessionsCollection, usersCollection } from "../config/databases.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 export async function signUp(req, res) {
   const { name, avatar, email, confirmEmail, password, confirmPassword } = req.body;
@@ -18,7 +18,7 @@ export async function signUp(req, res) {
     res.status(500).send(error.message);
   }
 
-  const encryptedPassword = await bcrypt.hash(password, 10).catch((err) => {
+  const encryptedPassword = await bcryptjs.hash(password, 10).catch((err) => {
     console.log(`"signUp: bcrypt.hash error for  password:"`, password, err.message);
   });
 
@@ -50,7 +50,7 @@ export async function signIn(req, res) {
   try {
     const user = await usersCollection.findOne({ email });
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (user && bcryptjs.compareSync(password, user.password)) {
       const tokenExist = await sessionsCollection.findOne({ idUser: user._id });
 
       if (!tokenExist) {
