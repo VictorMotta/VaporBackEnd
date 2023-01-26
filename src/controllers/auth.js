@@ -56,7 +56,7 @@ export async function signIn(req, res) {
       if (!tokenExist) {
         console.log("entrou token não existe");
 
-        await db.collection("sessions").insertOne({ idUser: user._id, token });
+        await sessionsCollection.insertOne({ idUser: user._id, token });
 
         const bodyTokenNoExist = {
           name: user.name,
