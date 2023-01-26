@@ -27,3 +27,11 @@ export async function productsPromotion(req, res) {
     res.status(500).send(error.message);
   }
 }
+export async function addProduct(req, res) {
+  try {
+    const product = await productsCollection.insertOne(req.body);
+    res.status(201).send(product);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
