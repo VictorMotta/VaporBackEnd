@@ -6,8 +6,8 @@ export async function signUp(req, res) {
   const { name, avatar, email, password } = req.body;
   const { typeuser } = req.headers;
 
-  if (!typeuser && (typeuser != "user" || typeuser != "admin")) {
-    return res.status(401).send("Apenas Usuários podem ser cadastrados!");
+  if (!typeuser || (typeuser !== "user" && typeuser !== "admin")) {
+    return res.status(401).send("Você não tem permissão para criar um usuário");
   }
 
   try {
@@ -19,12 +19,19 @@ export async function signUp(req, res) {
       return res.status(409).send("Username or email already exists");
     }
   } catch (error) {
-    console.log(`signUp: findOne error for name:${name} with email:${email} !`, error.message);
+    console.log(
+      `signUp: findOne error for name:${name} with email:${email} !`,
+      error.message
+    );
     res.status(500).send(error.message);
   }
 
   const encryptedPassword = await bcryptjs.hash(password, 10).catch((err) => {
-    console.log(`"signUp: bcrypt.hash error for  password:"`, password, err.message);
+    console.log(
+      `"signUp: bcrypt.hash error for  password:"`,
+      password,
+      err.message
+    );
   });
 
   const now = new Date();
