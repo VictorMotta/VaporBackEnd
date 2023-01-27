@@ -1,4 +1,8 @@
-import { productsCollection } from "../config/databases.js";
+import {
+  productsCollection,
+  sessionsCollection,
+  usersCollection,
+} from "../config/databases.js";
 
 export async function products(req, res) {
   let { limit, offset } = req.query;
@@ -28,12 +32,24 @@ export async function productsPromotion(req, res) {
   }
 }
 export async function addProduct(req, res) {
-  let { price, promoPercentage } = req.body;
+  let { title, price, promoPercentage } = req.body;
 
   price = Number(price);
   let pricePromo = price - (price * Number(promoPercentage)) / 100;
   pricePromo = pricePromo.toFixed(2);
+
   try {
+    const { idUser } = res.locals.session;
+    const user = await usersCollection.findOne({ _id: idUser });
+    if (!user) return res.status(401).send("User not found");
+
+    if (user.typeUser !== "admin")
+      return res.status(401).send("You have no permission to do this");
+
+    const ProductAlreadyExists = await productsCollection.findOne({ title });
+    if (ProductAlreadyExists) {
+      return res.status(409).send("This title already exists");
+    }
     const product = await productsCollection.insertOne({
       ...req.body,
       pricePromo,
