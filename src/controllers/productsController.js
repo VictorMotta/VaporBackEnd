@@ -28,8 +28,16 @@ export async function productsPromotion(req, res) {
   }
 }
 export async function addProduct(req, res) {
+  let { price, promoPercentage } = req.body;
+
+  price = Number(price);
+  let pricePromo = price - (price * Number(promoPercentage)) / 100;
+  pricePromo = pricePromo.toFixed(2);
   try {
-    const product = await productsCollection.insertOne(req.body);
+    const product = await productsCollection.insertOne({
+      ...req.body,
+      pricePromo,
+    });
     res.status(201).send(product);
   } catch (error) {
     res.status(500).send(error.message);
