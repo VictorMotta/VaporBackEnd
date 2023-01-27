@@ -15,7 +15,7 @@ export async function products(req, res) {
 }
 export async function productsPromotion(req, res) {
   try {
-    const products = await productsCollection.find({ pricePromo: { $gt: 0 } }).toArray();
+    const products = await productsCollection.find({ pricePromotion: { $gt: 0 } }).toArray();
     res.status(200).send(products);
   } catch (error) {
     res.status(500).send(error.message);
@@ -26,8 +26,8 @@ export async function addProduct(req, res) {
   let { title, price, promoPercentage } = req.body;
 
   price = Number(price);
-  let pricePromo = price - (price * Number(promoPercentage)) / 100;
-  pricePromo = pricePromo.toFixed(2);
+  let pricePromotion = price - (price * Number(promoPercentage)) / 100;
+  pricePromotion = pricePromotion.toFixed(2);
 
   try {
     const { idUser } = res.locals.session;
@@ -42,7 +42,7 @@ export async function addProduct(req, res) {
     }
     const product = await productsCollection.insertOne({
       ...req.body,
-      pricePromo,
+      pricePromotion,
     });
     res.status(201).send(product);
   } catch (error) {
