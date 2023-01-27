@@ -5,6 +5,6 @@ export const addProductSchema = joi.object({
   description: joi.string().required(),
   category: joi.string().required(),
   price: joi.number().required(),
-  images: joi.array().items(joi.string().uri()).required(),
+  images: joi.array().items(joi.string().uri()).min(1).required(),
   promoPercentage: joi.number().min(0).max(100).required(),
 });
