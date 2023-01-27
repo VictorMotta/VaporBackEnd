@@ -97,3 +97,16 @@ export async function signIn(req, res) {
     return res.status(500).send(error.message);
   }
 }
+
+export async function logoutUser(req, res) {
+  const session = res.locals.session;
+  console.log(session);
+
+  try {
+    await sessionsCollection.deleteOne({ token: session.token });
+
+    return res.send(200);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+}

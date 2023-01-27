@@ -1,4 +1,4 @@
-import { productsCollection } from "../config/databases.js";
+import { productsCollection, usersCollection } from "../config/databases.js";
 
 export async function products(req, res) {
   let { limit, offset } = req.query;
