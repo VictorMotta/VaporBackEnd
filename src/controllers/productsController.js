@@ -7,7 +7,11 @@ export async function products(req, res) {
     offset = 0;
   }
   try {
-    const products = await productsCollection.find({}).skip(offset).limit(limit).toArray();
+    const products = await productsCollection
+      .find({})
+      .skip(offset)
+      .limit(limit)
+      .toArray();
     res.status(200).send(products);
   } catch (error) {
     res.status(500).send(error.message);
@@ -15,7 +19,9 @@ export async function products(req, res) {
 }
 export async function productsPromotion(req, res) {
   try {
-    const products = await productsCollection.find({ pricePromotion: { $gt: 0 } }).toArray();
+    const products = await productsCollection
+      .find({ pricePromotion: { $gt: 0 } })
+      .toArray();
     res.status(200).send(products);
   } catch (error) {
     res.status(500).send(error.message);
@@ -24,17 +30,21 @@ export async function productsPromotion(req, res) {
 
 export async function addProduct(req, res) {
   let { title, price, promoPercentage } = req.body;
+  let pricePromotion = "";
 
-  price = Number(price);
-  let pricePromotion = price - (price * Number(promoPercentage)) / 100;
-  pricePromotion = pricePromotion.toFixed(2);
+  if (promoPercentage !== 0) {
+    price = Number(price);
+    pricePromotion = price - (price * Number(promoPercentage)) / 100;
+    pricePromotion = pricePromotion.toFixed(2);
+  }
 
   try {
     const { idUser } = res.locals.session;
     const user = await usersCollection.findOne({ _id: idUser });
     if (!user) return res.status(401).send("User not found");
 
-    if (user.typeUser !== "admin") return res.status(401).send("You have no permission to do this");
+    if (user.typeUser !== "admin")
+      return res.status(401).send("You have no permission to do this");
 
     const ProductAlreadyExists = await productsCollection.findOne({ title });
     if (ProductAlreadyExists) {
