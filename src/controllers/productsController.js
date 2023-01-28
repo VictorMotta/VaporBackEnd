@@ -69,7 +69,7 @@ export async function addProduct(req, res) {
       category,
       price: price.toFixed(2),
       pricePromotion,
-      promoPercentage,
+      promoPercentage: Number(promoPercentage),
       images,
     });
     res.status(201).send(product);
