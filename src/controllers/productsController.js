@@ -1,7 +1,7 @@
 import {
   productsCollection,
-  sessionsCollection,
   usersCollection,
+  sessionsCollection,
 } from "../config/databases.js";
 import { ObjectID } from "bson";
 
@@ -42,10 +42,13 @@ export async function products(req, res) {
 
 export async function addProduct(req, res) {
   let { title, price, promoPercentage } = req.body;
+  let pricePromotion = "";
 
-  price = Number(price);
-  let pricePromo = price - (price * Number(promoPercentage)) / 100;
-  pricePromo = pricePromo.toFixed(2);
+  if (promoPercentage !== 0) {
+    price = Number(price);
+    pricePromotion = price - (price * Number(promoPercentage)) / 100;
+    pricePromotion = pricePromotion.toFixed(2);
+  }
 
   try {
     const { idUser } = res.locals.session;
@@ -61,7 +64,7 @@ export async function addProduct(req, res) {
     }
     const product = await productsCollection.insertOne({
       ...req.body,
-      pricePromo,
+      pricePromotion,
     });
     res.status(201).send(product);
   } catch (error) {
