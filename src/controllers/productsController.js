@@ -3,14 +3,32 @@ import {
   sessionsCollection,
   usersCollection,
 } from "../config/databases.js";
+import { ObjectID } from "bson";
 
 export async function products(req, res) {
   let { limit, offset } = req.query;
+  let { promo } = req.body;
+  const { id } = req.params;
   if (!limit || !offset) {
     limit = 0;
     offset = 0;
+  } else {
+    limit = Number(limit);
+    offset = Number(offset);
   }
   try {
+    if (id) {
+      const products = await productsCollection.findOne({ _id: ObjectID(id) });
+      console.log(products);
+      return res.status(200).send(products);
+    }
+    if (promo === true) {
+      const products = await productsCollection
+        .find({ promoPercentage: { $gt: 0 } })
+        .toArray();
+      console.log(products);
+      return res.status(200).send(products);
+    }
     const products = await productsCollection
       .find({})
       .skip(offset)
@@ -21,16 +39,7 @@ export async function products(req, res) {
     res.status(500).send(error.message);
   }
 }
-export async function productsPromotion(req, res) {
-  try {
-    const products = await productsCollection
-      .find({ pricePromo: { $gt: 0 } })
-      .toArray();
-    res.status(200).send(products);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-}
+
 export async function addProduct(req, res) {
   let { title, price, promoPercentage } = req.body;
 
