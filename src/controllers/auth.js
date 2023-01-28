@@ -12,7 +12,7 @@ export async function signUp(req, res) {
 
   try {
     const userAlreadyExists = await usersCollection.findOne({
-      $or: [({ email }, { name })],
+      $or: [{ email }, { name }],
     });
 
     if (userAlreadyExists) {
