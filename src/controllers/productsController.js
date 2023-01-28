@@ -41,7 +41,8 @@ export async function products(req, res) {
 }
 
 export async function addProduct(req, res) {
-  let { title, price, promoPercentage } = req.body;
+  let { title, description, category, price, promoPercentage, images } =
+    req.body;
   let pricePromotion = "";
 
   if (promoPercentage !== 0) {
@@ -63,8 +64,13 @@ export async function addProduct(req, res) {
       return res.status(409).send("This title already exists");
     }
     const product = await productsCollection.insertOne({
-      ...req.body,
+      title,
+      description,
+      category,
+      price: price.toFixed(2),
       pricePromotion,
+      promoPercentage,
+      images,
     });
     res.status(201).send(product);
   } catch (error) {
