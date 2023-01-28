@@ -6,8 +6,7 @@ import {
 import { ObjectID } from "bson";
 
 export async function products(req, res) {
-  let { limit, offset } = req.query;
-  let { promo } = req.body;
+  let { limit, offset, promo } = req.query;
   const { id } = req.params;
   if (!limit || !offset) {
     limit = 0;
@@ -22,7 +21,8 @@ export async function products(req, res) {
       console.log(products);
       return res.status(200).send(products);
     }
-    if (promo === true) {
+    console.log(promo);
+    if (promo === "true") {
       const products = await productsCollection
         .find({ promoPercentage: { $gt: 0 } })
         .toArray();
