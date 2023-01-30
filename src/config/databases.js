@@ -9,6 +9,7 @@ let db;
 try {
   await mongoClient.connect();
   db = mongoClient.db();
+  console.log("MongoDB Conectado!");
 } catch (err) {
   console.log("Erro no mongo.conect", err.message);
 }
