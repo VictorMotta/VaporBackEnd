@@ -1,8 +1,4 @@
-import {
-  productsCollection,
-  usersCollection,
-  sessionsCollection,
-} from "../config/databases.js";
+import { productsCollection, usersCollection, sessionsCollection } from "../config/databases.js";
 import { ObjectID } from "bson";
 
 export async function products(req, res) {
@@ -18,22 +14,16 @@ export async function products(req, res) {
   try {
     if (id) {
       const products = await productsCollection.findOne({ _id: ObjectID(id) });
-      console.log(products);
+
       return res.status(200).send(products);
     }
-    console.log(promo);
+
     if (promo === "true") {
-      const products = await productsCollection
-        .find({ promoPercentage: { $gt: 0 } })
-        .toArray();
-      console.log(products);
+      const products = await productsCollection.find({ promoPercentage: { $gt: 0 } }).toArray();
+
       return res.status(200).send(products);
     }
-    const products = await productsCollection
-      .find({})
-      .skip(offset)
-      .limit(limit)
-      .toArray();
+    const products = await productsCollection.find({}).skip(offset).limit(limit).toArray();
     res.status(200).send(products);
   } catch (error) {
     res.status(500).send(error.message);
@@ -41,8 +31,7 @@ export async function products(req, res) {
 }
 
 export async function addProduct(req, res) {
-  let { title, description, category, price, promoPercentage, images } =
-    req.body;
+  let { title, description, category, price, promoPercentage, images } = req.body;
   let pricePromotion = "";
 
   if (promoPercentage !== 0) {
@@ -56,8 +45,7 @@ export async function addProduct(req, res) {
     const user = await usersCollection.findOne({ _id: idUser });
     if (!user) return res.status(401).send("User not found");
 
-    if (user.typeUser !== "admin")
-      return res.status(401).send("You have no permission to do this");
+    if (user.typeUser !== "admin") return res.status(401).send("You have no permission to do this");
 
     const ProductAlreadyExists = await productsCollection.findOne({ title });
     if (ProductAlreadyExists) {

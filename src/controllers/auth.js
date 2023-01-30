@@ -19,19 +19,12 @@ export async function signUp(req, res) {
       return res.status(409).send("Username or email already exists");
     }
   } catch (error) {
-    console.log(
-      `signUp: findOne error for name:${name} with email:${email} !`,
-      error.message
-    );
+    console.log(`signUp: findOne error for name:${name} with email:${email} !`, error.message);
     res.status(500).send(error.message);
   }
 
   const encryptedPassword = await bcryptjs.hash(password, 10).catch((err) => {
-    console.log(
-      `"signUp: bcrypt.hash error for  password:"`,
-      password,
-      err.message
-    );
+    console.log(`"signUp: bcrypt.hash error for  password:"`, password, err.message);
   });
 
   const now = new Date();
@@ -67,8 +60,6 @@ export async function signIn(req, res) {
       const tokenExist = await sessionsCollection.findOne({ idUser: user._id });
 
       if (!tokenExist) {
-        console.log("entrou token não existe");
-
         await sessionsCollection.insertOne({ idUser: user._id, token });
 
         const bodyTokenNoExist = {
@@ -81,7 +72,6 @@ export async function signIn(req, res) {
         return res.send(bodyTokenNoExist);
       }
 
-      console.log("entrou token existe");
       const bodyTokenExist = {
         name: user.name,
         avatar: user.avatar,
@@ -100,7 +90,6 @@ export async function signIn(req, res) {
 
 export async function logoutUser(req, res) {
   const session = res.locals.session;
-  console.log(session);
 
   try {
     await sessionsCollection.deleteOne({ token: session.token });
